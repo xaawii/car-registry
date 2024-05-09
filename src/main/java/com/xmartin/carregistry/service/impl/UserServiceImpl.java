@@ -35,13 +35,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUserByEmail(String email) throws UserNotFoundException {
-        return userConverter.toModel(userRepository.findByEmailIgnoreCase(email)
+        return userConverter.toModel(userRepository.findByEmail(email)
                 .orElseThrow(() -> new UserNotFoundException("User not found")));
     }
 
     @Override
     public void deleteUser(String email) throws UserNotFoundException {
-        UserEntity userEntity = userRepository.findByEmailIgnoreCase(email)
+        UserEntity userEntity = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
         userRepository.delete(userEntity);
     }
@@ -74,7 +74,7 @@ public class UserServiceImpl implements UserService {
         return new UserDetailsService() {
             @Override
             public UserDetails loadUserByUsername(String username) {
-                return userRepository.findByEmailIgnoreCase(username)
+                return userRepository.findByEmail(username)
                         .orElseThrow(() -> new UsernameNotFoundException("User not found"));
             }
         };

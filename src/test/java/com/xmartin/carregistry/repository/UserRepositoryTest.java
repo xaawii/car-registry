@@ -36,7 +36,7 @@ class UserRepositoryTest {
         entityManager.persist(user);
 
         //when
-        Optional<UserEntity> foundUser = userRepository.findByEmailIgnoreCase(email);
+        Optional<UserEntity> foundUser = userRepository.findByEmail(email);
 
         //then
         assertTrue(foundUser.isPresent());

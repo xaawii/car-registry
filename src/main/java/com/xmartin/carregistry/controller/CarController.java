@@ -96,21 +96,27 @@ public class CarController {
     @Operation(summary = "Get cars", description = "Returns a list of car data.")
     @GetMapping
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-    public CompletableFuture<ResponseEntity<CarListResponse>> getCars(@RequestParam(defaultValue = "0") int page,
+    public CompletableFuture<ResponseEntity<?>> getCars(@RequestParam(defaultValue = "0") int page,
                                                                       @RequestParam(defaultValue = "10") int size) {
 
 
         return service.getCars(PageRequest.of(page, size))
                 .thenApplyAsync(carMapper::toResponseList)
-                .thenApplyAsync(cars -> CarListResponse.builder()
-                        .page(page)
-                        .pageSize(size)
-                        .elements(cars.size())
-                        .carList(cars)
-                        .build())
-                .thenApplyAsync(ResponseEntity::ok)
+                .thenApplyAsync(cars -> {
+                    if (cars.isEmpty()) {
+                        return ResponseEntity.noContent().build();
+                    } else {
+                        return ResponseEntity.ok(
+                                CarListResponse.builder()
+                                        .page(page)
+                                        .pageSize(size)
+                                        .elements(cars.size())
+                                        .carList(cars)
+                                        .build()
+                        );
+                    }
+                })
                 .exceptionallyAsync(throwable -> ResponseEntity.internalServerError().build());
-
 
     }
 

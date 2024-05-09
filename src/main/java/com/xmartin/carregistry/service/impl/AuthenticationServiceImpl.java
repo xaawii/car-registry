@@ -34,7 +34,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
      */
     public JwtResponse signup(SignUpRequest request) throws BadRequestException, EmailAlreadyInUseException {
 
-        if (userRepository.findByEmailIgnoreCase(request.getEmail()).isPresent()) {
+        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
             throw new EmailAlreadyInUseException("Email is already in use");
         }
 
@@ -63,7 +63,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
 
         //busca el usuario en bbdd, si no lo encuentra lanza una excepción
-        var user = userRepository.findByEmailIgnoreCase(request.getEmail())
+        UserEntity user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid email or password"));
 
         var jwt = jwtService.generateToken(user);

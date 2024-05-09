@@ -15,13 +15,16 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -40,6 +43,9 @@ class CarServiceTest {
 
     @Mock
     private CarConverter carConverter;
+
+    @Mock
+    private Page page;
 
     Car car;
     CarEntity carEntity;
@@ -107,8 +113,10 @@ class CarServiceTest {
     void get_cars_test() {
 
         //given
-        when(carRepository.findAll()).thenReturn(carEntityList);
-        when(carConverter.toCarList(carEntityList)).thenReturn(carModelList);
+        Page<CarEntity> page = new PageImpl<>(carEntityList, PageRequest.of(0, 10), carEntityList.size());
+
+        when(carRepository.findAll(PageRequest.of(0, 10))).thenReturn(page);
+        when(carConverter.toCarList(any())).thenReturn(carModelList);
 
         //then
         assertEquals(carModelList, carService.getCars(PageRequest.of(0, 10)).get());

@@ -20,7 +20,9 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
+
 
 @ExtendWith(MockitoExtension.class)
 class AuthenticationServiceImplTest {
@@ -42,7 +44,8 @@ class AuthenticationServiceImplTest {
 
     @BeforeEach
     void setUp() {
-
+        userEntity = UserEntity.builder().id(1).name("Xavi").email("test@gmail.com")
+                .password("123").role("ROLE_USER").build();
     }
 
     @SneakyThrows
@@ -50,14 +53,14 @@ class AuthenticationServiceImplTest {
     void signupTest() {
         //given
         SignUpRequest signUpRequest = SignUpRequest.builder().email("test@gmail.com")
-                .name("Xavi").password("123").build();
+                .name("Xavi").password("123456").build();
 
         User user = user = User.builder().id(1).email("test@gmail.com")
-                .name("Xavi").password("123").role("ROLE_USER").build();
+                .name("Xavi").password("123456").role("ROLE_USER").build();
 
         when(passwordEncoder.encode(signUpRequest.getPassword())).thenReturn("456");
         when(userService.save(any(UserEntity.class))).thenReturn(user);
-        when(jwtService.generateToken(userEntity)).thenReturn("jjkl5");
+        when(jwtService.generateToken(any(User.class))).thenReturn("jjkl5");
 
         //when
         JwtResponse jwtResponse = authService.signup(signUpRequest);
@@ -69,9 +72,10 @@ class AuthenticationServiceImplTest {
     @Test
     void loginTest() {
         LoginRequest loginRequest = LoginRequest.builder().email("test@gmail.com")
-                .password("123").build();
-        when(userRepository.findByEmailIgnoreCase(loginRequest.getEmail())).thenReturn(Optional.ofNullable(userEntity));
-        when(jwtService.generateToken(userEntity)).thenReturn("uwtx");
+                .password("123456").build();
+
+        when(userRepository.findByEmail(anyString())).thenReturn(Optional.ofNullable(userEntity));
+        when(jwtService.generateToken(any(UserEntity.class))).thenReturn("uwtx");
 
         //when
         JwtResponse jwtResponse = authService.login(loginRequest);

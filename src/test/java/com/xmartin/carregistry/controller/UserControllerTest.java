@@ -1,11 +1,12 @@
 package com.xmartin.carregistry.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.xmartin.carregistry.repository.UserRepository;
 import com.xmartin.carregistry.controller.dtos.JwtResponse;
 import com.xmartin.carregistry.controller.dtos.LoginRequest;
 import com.xmartin.carregistry.controller.dtos.SignUpRequest;
 import com.xmartin.carregistry.controller.mappers.UserMapper;
+import com.xmartin.carregistry.exceptions.EmailAlreadyInUseException;
+import com.xmartin.carregistry.repository.UserRepository;
 import com.xmartin.carregistry.service.impl.AuthenticationServiceImpl;
 import com.xmartin.carregistry.service.impl.JwtService;
 import com.xmartin.carregistry.service.impl.UserServiceImpl;
@@ -16,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -85,7 +85,7 @@ class UserControllerTest {
         //when - then
         mockMvc
                 .perform(MockMvcRequestBuilders
-                        .post("/signup")
+                        .post("/users/signup")
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(csrf())
                         .content(objectMapper.writeValueAsString(request)))
@@ -102,14 +102,14 @@ class UserControllerTest {
         //given
         SignUpRequest request = SignUpRequest.builder().email("xavi@test.com").name("Xavi").password("123456").build();
 
-        doThrow(new DataIntegrityViolationException("User already exists"))
+        doThrow(new EmailAlreadyInUseException("User already exists"))
                 .when(authService).signup(request);
 
 
         //when - then
         mockMvc
                 .perform(MockMvcRequestBuilders
-                        .post("/signup")
+                        .post("/users/signup")
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(csrf())
                         .content(objectMapper.writeValueAsString(request)))
@@ -130,7 +130,7 @@ class UserControllerTest {
         //when - then
         mockMvc
                 .perform(MockMvcRequestBuilders
-                        .post("/signup")
+                        .post("/users/signup")
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(csrf())
                         .content(objectMapper.writeValueAsString(request)))
@@ -151,7 +151,7 @@ class UserControllerTest {
         //when - then
         mockMvc
                 .perform(MockMvcRequestBuilders
-                        .post("/login")
+                        .post("/users/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(csrf())
                         .content(objectMapper.writeValueAsString(loginRequest))
@@ -172,7 +172,7 @@ class UserControllerTest {
         //when - then
         mockMvc
                 .perform(MockMvcRequestBuilders
-                        .post("/login")
+                        .post("/users/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(csrf())
                         .content(objectMapper.writeValueAsString(loginRequest))

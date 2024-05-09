@@ -116,7 +116,7 @@ class CarControllerTest {
         //when - then
         mockMvc
                 .perform(MockMvcRequestBuilders
-                        .post("/cars/addCar")
+                        .post("/cars")
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(csrf())
                         .content(objectMapper.writeValueAsString(carRequest)))
@@ -166,8 +166,8 @@ class CarControllerTest {
 
         mockMvc.perform(asyncDispatch(result))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$").isArray())
-                .andExpect(jsonPath("$[0].id").value(1));
+                .andExpect(jsonPath("$.carList").isArray())
+                .andExpect(jsonPath("$.carList[0].id").value(1));
 
     }
 
@@ -186,7 +186,7 @@ class CarControllerTest {
         //when - then
         MvcResult result = mockMvc
                 .perform(MockMvcRequestBuilders
-                        .post("/cars/addCars")
+                        .post("/cars/batch")
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(csrf())
                         .content(objectMapper.writeValueAsString(carRequestList)))
@@ -209,7 +209,7 @@ class CarControllerTest {
         //when - then
         mockMvc
                 .perform(MockMvcRequestBuilders
-                        .delete("/cars/deleteCar/{id}", 1)
+                        .delete("/cars/{id}", 1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(csrf())
                         .content(objectMapper.writeValueAsString(carRequest)))
@@ -240,7 +240,7 @@ class CarControllerTest {
         //when - then
         mockMvc
                 .perform(MockMvcRequestBuilders
-                        .put("/cars/updateCar/{id}", 1)
+                        .put("/cars/{id}", 1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(csrf())
                         .content(objectMapper.writeValueAsString(carRequest)))

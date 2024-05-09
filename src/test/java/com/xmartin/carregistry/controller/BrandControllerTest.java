@@ -134,7 +134,7 @@ class BrandControllerTest {
         //when - then
         mockMvc
                 .perform(MockMvcRequestBuilders
-                        .delete("/brands/deleteBrand/{id}", 1)
+                        .delete("/brands/{id}", 1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(csrf()))
                 .andExpect(status().isOk())
@@ -153,7 +153,7 @@ class BrandControllerTest {
         //when - then
         mockMvc
                 .perform(MockMvcRequestBuilders
-                        .post("/brands/addBrand")
+                        .post("/brands")
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(csrf())
                         .content(objectMapper.writeValueAsString(brandRequest)))
@@ -178,7 +178,7 @@ class BrandControllerTest {
         //when - then
         mockMvc
                 .perform(MockMvcRequestBuilders
-                        .put("/brands/updateBrand/{id}", 1)
+                        .put("/brands/{id}", 1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(csrf())
                         .content(objectMapper.writeValueAsString(brandRequest)))
