@@ -97,7 +97,7 @@ public class CarController {
     @GetMapping
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public CompletableFuture<ResponseEntity<?>> getCars(@RequestParam(defaultValue = "0") int page,
-                                                                      @RequestParam(defaultValue = "10") int size) {
+                                                        @RequestParam(defaultValue = "10") int size) {
 
 
         return service.getCars(PageRequest.of(page, size))
@@ -170,8 +170,10 @@ public class CarController {
         if (Objects.requireNonNull(file.getOriginalFilename()).contains(".csv")) {
             try {
                 return ResponseEntity.status(HttpStatus.CREATED).body(carMapper.toResponseList(service.uploadCars(file)));
-            } catch (BrandNotFoundException | FailedToLoadCarsException e) {
+            } catch (BrandNotFoundException | FailedToLoadCarsException | NumberFormatException e) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            } catch (Exception e) {
+                return ResponseEntity.internalServerError().build();
             }
         }
 

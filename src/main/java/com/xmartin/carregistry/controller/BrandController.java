@@ -18,7 +18,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
@@ -115,11 +114,17 @@ public class BrandController {
     @Operation(summary = "Get all brands", description = "Returns a list of brand data.")
     @GetMapping
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-    public CompletableFuture<ResponseEntity<List<BrandResponse>>> getBrands() {
+    public CompletableFuture<ResponseEntity<?>> getBrands() {
 
         return service.getBrands()
                 .thenApplyAsync(brandMapper::toResponseList)
-                .thenApplyAsync(ResponseEntity::ok)
+                .thenApplyAsync(brands -> {
+                    if (brands.isEmpty()) {
+                        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+                    } else {
+                        return ResponseEntity.ok(brands);
+                    }
+                })
                 .exceptionallyAsync(throwable -> ResponseEntity.internalServerError().build());
 
     }
@@ -135,7 +140,7 @@ public class BrandController {
         if (Objects.requireNonNull(file.getOriginalFilename()).contains(".csv")) {
             try {
                 return ResponseEntity.status(HttpStatus.CREATED).body(brandMapper.toResponseList(service.uploadBrands(file)));
-            } catch (BrandConflictException | FailedToLoadBrandsException e) {
+            } catch (BrandConflictException | FailedToLoadBrandsException | NumberFormatException e) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
             } catch (Exception e) {
                 return ResponseEntity.internalServerError().build();
