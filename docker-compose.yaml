@@ -1,0 +1,41 @@
+services:
+  mysql:
+    container_name: mysql-car-registry
+    image: mysql:latest
+    ports:
+      - "8002:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: CarRegistry
+    volumes:
+      - data-mysql:/var/lib/mysql
+    restart: always
+    networks:
+      - spring
+
+  car-registry:
+    container_name: car-registry
+    image: xaawii/car-registry:latest
+    ports:
+      - "8000:8000"
+    environment:
+      DB_USER: root
+      DB_PASSWORD: password
+      DB_NAME: CarRegistry
+      DB_HOST: mysql-car-registry
+      DB_PORT: 3306
+    restart: always
+    networks:
+      - spring
+    depends_on:
+      - mysql
+
+
+volumes:
+  data-mysql:
+    name: data-mysql
+
+networks:
+  spring:
+    name: spring
+    driver: bridge

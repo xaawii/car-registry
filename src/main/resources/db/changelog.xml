@@ -62,27 +62,4 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="4" author="xavi">
-        <dropTable tableName="user"/>
-    </changeSet>
-
-    <changeSet id="5" author="xavi">
-        <createTable tableName="user">
-            <column name="id" type="bigint" autoIncrement="true">
-                <constraints primaryKey="true"/>
-            </column>
-            <column name="name" type="varchar(255)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="email" type="varchar(255)">
-                <constraints nullable="false" unique="true"/>
-            </column>
-            <column name="password" type="varchar(255)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="role" type="varchar(255)"/>
-            <column name="image" type="blob"/>
-        </createTable>
-    </changeSet>
-
 </databaseChangeLog>
