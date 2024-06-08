@@ -7,7 +7,9 @@ Users must be registered and logged in to obtain a valid token. Users with the r
 Users with the role 'ADMIN' have access to all endpoints. They can delete users, perform CRUD actions on brands and cars, and upload a CSV file to populate the database with brands and cars.
 
 # Docker Compose Configuration
-Below is the docker-compose.yaml file that facilitates running this API on Docker:
+Below is the docker-compose.yaml file that facilitates running this API on Docker.
+
+**IMPORTANT:** Replace `SECRET_KEY` with your own Base64-encoded secret key.
 ```yaml
 services:
   mysql:
@@ -35,6 +37,8 @@ services:
       DB_NAME: CarRegistry
       DB_HOST: mysql-car-registry
       DB_PORT: 3306
+      SECRET_KEY:cmFuZG9tIGV4YW1wbGUsIHBsZWFzZSBjcmVhdGUgeW91ciBvd24gYmFzZTY0IHNlY3JldCBrZXkgYW5kIHJlcGxhY2UgaXQ=
+      KEY_EXPIRATION_MS:3600000
     restart: always
     networks:
       - spring
