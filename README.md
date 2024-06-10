@@ -6,7 +6,7 @@ Users must be registered and logged in to obtain a valid token. Users with the r
 
 Users with the role 'ADMIN' have access to all endpoints. They can delete users, perform CRUD actions on brands and cars, and upload a CSV file to populate the database with brands and cars.
 
-# Docker Compose Configuration
+## Docker Compose Configuration
 Below is the docker-compose.yaml file that facilitates running this API on Docker.
 
 **IMPORTANT:** Replace `SECRET_KEY` with your own Base64-encoded secret key.
@@ -55,7 +55,7 @@ networks:
     name: spring
     driver: bridge
 ```
-# Populating the Database with CSV Files
+## Populating the Database with CSV Files
 Utilize these CSV files to populate the brand and car tables within the database by employing the designated endpoint:
 
 brands.csv
@@ -125,8 +125,12 @@ Alfa Romeo,Stelvio,SUV,Gray,Diesel,20000,5,40000,2021
 BYD,Tang,SUV,White,Electric,15000,5,45000,2023
 BYD,Han,Sporty,Blue,Electric,10000,4,50000,2022
 ```
-# Creating a User with ADMIN Role
+## Creating a User with ADMIN Role
 To accomplish this, you must manually adjust the role of the users whom you wish to designate as administrators.
 
-# Documentation for Endpoints
+## Documentation for Endpoints
 The documentation for endpoints is available on Swagger. You can explore and test them at /swagger-ui/index.html.
+
+## Using Source Code
+If you download the source code, remember to create your `.env` file using the `.env.example` file as a reference.
+
